@@ -41,12 +41,12 @@ from orders.views import LibraryView
 from .views import home_page, about_page, contact_page
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-      url(r'^$', home_page, name='home'),
+    url('admin/', admin.site.urls),
+    url(r'^$', home_page, name='home'),
     url(r'^about/$', about_page, name='about'),
     #url(r'^accounts/login/$', RedirectView.as_view(url='/login')),
     url(r'^accounts/$', RedirectView.as_view(url='/account')),
-    url(r'^account/', include("accounts.urls", namespace='account')),
+    url(r'^account/', include(("accounts.urls",'accounts'), namespace='account')),
     url(r'^accounts/', include("accounts.passwords.urls")),
     url(r'^address/$', RedirectView.as_view(url='/addresses')),
     url(r'^addresses/$', AddressListView.as_view(), name='addresses'),
@@ -61,24 +61,22 @@ urlpatterns = [
     url(r'^register/guest/$', GuestRegisterView.as_view(), name='guest_register'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^api/cart/$', cart_detail_api_view, name='api-cart'),
-    url(r'^cart/', include("carts.urls", namespace='cart')),
+    url(r'^cart/', include(("carts.urls", 'carts'), namespace='cart')),
     url(r'^billing/payment-method/$', payment_method_view, name='billing-payment-method'),
     url(r'^billing/payment-method/create/$', payment_method_createview, name='billing-payment-method-endpoint'),
     url(r'^register/$', RegisterView.as_view(), name='register'),
     url(r'^bootstrap/$', TemplateView.as_view(template_name='bootstrap/example.html')),
     url(r'^library/$', LibraryView.as_view(), name='library'),
-    url(r'^orders/', include("orders.urls", namespace='orders')),
-    url(r'^products/', include("products.urls", namespace='products')),
-    url(r'^search/', include("search.urls", namespace='search')),
+    url(r'^orders/', include(("orders.urls",'orders'),namespace='orders')),
+    url(r'^products/', include(("products.urls",'products'), namespace='products')),
+    url(r'^search/', include(("search.urls", 'search'), namespace='search')),
     url(r'^settings/$', RedirectView.as_view(url='/account')),
     url(r'^settings/email/$', MarketingPreferenceUpdateView.as_view(), name='marketing-pref'),
-    url(r'^webhooks/mailchimp/$', MailchimpWebhookView.as_view(), name='webhooks-mailchimp'),
-    url(r'^admin/', admin.site.urls),
+    url(r'^webhooks/mailchimp/$', MailchimpWebhookView.as_view(), name='webhooks-mailchimp')
+
 ]
 
-
 if settings.DEBUG:
-    urlpatterns += urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+    urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
